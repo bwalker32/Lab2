@@ -1,11 +1,12 @@
 import React from 'react'
 
-function Logout({ dispatch, user}) {
+function Logout({ dispatch, user }) {
   return (
     <form 
     onSubmit={e => {
       e.preventDefault();
       dispatch({type: "LOGOUT"});
+      console.log(user);
     }} 
     className="logout-form">
       Logged in as {user}

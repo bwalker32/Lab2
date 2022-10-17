@@ -8,6 +8,7 @@ function Login({ dispatch }) {
     <form className="login-form" onSubmit={e => {
       e.preventDefault();
       dispatch({type: "LOGIN", username});
+      console.log(username);
     }}
     >      
         <div className="login-form-inner">
@@ -20,7 +21,6 @@ function Login({ dispatch }) {
                 typeof='text' 
                 name="login-username" 
                 id="login-username" 
-                placeholder='test' 
                 onChange={e => setUsername(e.target.value)} 
                 value={username} />
             </div>
@@ -30,8 +30,7 @@ function Login({ dispatch }) {
                 <input 
                 typeof='password' 
                 name="login-password" 
-                id="login-password" 
-                placeholder='test' />
+                id="login-password" />
             </div>
 
             <button type='submit' id='login-button'>Login</button>

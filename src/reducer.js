@@ -1,3 +1,5 @@
+import { getDate } from './Helpers/Date'
+
 function userReducer(state, action) {
     switch (action.type){
         case "LOGIN":
@@ -12,26 +14,38 @@ function userReducer(state, action) {
 
 function postReducer(state, action) {
     switch (action.type){
-        case "CREATE_POST":
-            const post = {
-                id: action.id,
-                author: action.user,
-                text: action.text,
-                dateCreated: action.dateCreated,
-                dateCompleted: action.dateCompleted,
-                isComplete: action.isComplete,
-                title: action.title
-            }
-            return [...state, post];
+        case "CREATE_TODO":
+            return [...state, newTodo(action.payload)];
+        case "DELETE_TODO":
+            return state.filter(todo => todo.id !== action.payload.id);
+        case "COMPLETED":
+            return state.map(todo => {
+                if(todo.id === action.payload.id){
+                    return {...todo, completed: !todo.completed, dateCompleted: getDate()};
+                }
+                return todo;
+            })
         default:
             return state;
     }
+}
+
+const newTodo = (payload) => {
+    return {
+        title: payload.title,
+        content: payload.content,
+        author: payload.author,
+        id: Math.random() * 1000,
+        created: getDate(),
+        completed: false,
+        dateCompleted: ""
+    };
 }
 
 
 export default function appReducer(state, action) {
     return {
         user: userReducer(state.user, action),
-        post: postReducer(state.post, action)
+        todos: postReducer(state.todos, action)
     };
 }
