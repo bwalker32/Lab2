@@ -25,6 +25,8 @@ function postReducer(state, action) {
                 }
                 return todo;
             })
+        case "FETCH_TODOS":
+            return action.todos;
         default:
             return state;
     }
@@ -35,7 +37,7 @@ const newTodo = (payload) => {
         title: payload.title,
         content: payload.content,
         author: payload.author,
-        id: Math.random() * 1000,
+        id: payload.id,
         created: getDate(),
         completed: false,
         dateCompleted: ""

@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
-import CreateTodo from "./CreateTodo";
+import React, { useContext, useState } from 'react';
+import { StateContext } from '../Context/context';
 import Todo from './Todo';
 
-function TodoList({ todos=[], dispatch }) {   // todo array passed through
+function TodoList() {   // todo array passed through
+
+  const { state, dispatch } = useContext(StateContext);
+  const { todos } = state;
 
   return (
     <div>

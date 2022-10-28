@@ -1,6 +1,11 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import { StateContext } from '../Context/context';
 
-function Logout({ dispatch, user }) {
+function Logout() {
+
+  const { state, dispatch } = useContext(StateContext);
+  const { user } = state;
+
   return (
     <form 
     onSubmit={e => {

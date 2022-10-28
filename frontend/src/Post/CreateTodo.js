@@ -1,10 +1,15 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react';
+import { useResource } from 'react-request-hook';
+import { StateContext } from '../Context/context';
+import { v4 as uuidv4 } from "uuid";
 
-function CreateTodo({ user, dispatch }) {
+function CreateTodo() {
 
+  const { state, dispatch } = useContext(StateContext);
+  const { user } = state;
   const [content, setContent] = useState(''); // Post input
   const [title, setTitle] = useState(''); // Post title
-  const [error, setError] = useState(""); // Error for post 
+  // const [error, setError] = useState(""); // Error for post 
 
   // Checking to see whether a title is used or not
   // const handleDecision = (e) => {
@@ -34,12 +39,28 @@ function CreateTodo({ user, dispatch }) {
     //         setError("");
     // }
 
+  const [todo, createTodo] = useResource(({ title, content, author, id }) => ({
+    url: "/todos",
+    method: "post",
+    data: { title, content, author, id ,completed: false },
+  }));
+
   return(
     <form className='todo-form' 
     onSubmit={e => {
-        e.preventDefault();
-        dispatch({type: "CREATE_TODO", payload: {title: title, content: content, author: user}});
-        }}>
+      let id = uuidv4()
+      createTodo({title, content, author: user, id, completed: false})
+      e.preventDefault();
+      dispatch({
+        type: "CREATE_TODO", 
+        payload: {
+          title: title, 
+          content: content, 
+          author: user,
+          id: id,
+          completed: false,
+        }});
+      }}>
 
       {/* {(error !== "") ? (<div className='error'>{error}</div>) : ""} */}
        {/* Raise error if error does !== "" */}

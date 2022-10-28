@@ -1,20 +1,34 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { useResource } from 'react-request-hook';
+import { StateContext } from '../Context/context';
 
-function Register({ dispatch }) {
+function Register() {
 
+  const { dispatch } = useContext(StateContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordRepeat, setPasswordRepeat] = useState("");
 
+  const [user, register] = useResource((username, password) => ({
+    url: 'users',
+    method: 'post',
+    data: {email: username, password},
+  }));
+
+  useEffect(() => {
+    if (user && user.data && user.data.user.email) {                      // If all are true
+      dispatch({ type: "REGISTER", username: user.data.user.email });
+    }
+  }, [user]);
+
   return (
     <form className="register-form" onSubmit={e => {
       e.preventDefault();
-      dispatch({type: "REGISTER", password});
+      register(username, password);
     }}
     >      
         <div className="register-form-inner">
             <h2>Register</h2>
-            {/* {(error !== "") ? (<div className='error'>{error}</div>) : ""} */}
 
             <div className='form-group'>
                 <label htmlFor='register-username'>Username:</label>
@@ -46,12 +60,20 @@ function Register({ dispatch }) {
                 id="register-password-repeat" 
                 placeholder='test'
                 onChange={e => setPasswordRepeat(e.target.value)}
-                value={passwordRepeat} />
+                value={passwordRepeat}
+                />
             </div>
 
               
 
-            <button type='submit' value="Register" id='login-button'>Login</button>
+            <button type='submit' value="Register" id='login-button'
+            disabled={
+              username.length === 0 ||
+              password.length === 0 ||
+              password !== passwordRepeat
+              }>
+                Register
+              </button>
 
         </div>
     </form>
