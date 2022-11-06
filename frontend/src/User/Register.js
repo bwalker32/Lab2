@@ -66,7 +66,7 @@ function Register() {
 
               
 
-            <button type='submit' value="Register" id='login-button'
+            <button type='submit' value="Register" id='register-button'
             disabled={
               username.length === 0 ||
               password.length === 0 ||

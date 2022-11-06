@@ -37,7 +37,7 @@ function Login() {
         login(username, password);
       }}
       >      
-          <div className="login-form-inner">
+          <div className="form-inner">
               <h2>Login</h2>
               {/* {(error !== "") ? (<div className='error'>{error}</div>) : ""} */}
 

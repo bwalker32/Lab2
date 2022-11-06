@@ -1,6 +1,6 @@
 import './App.css';
 import appReducer from './reducer';
-import { useReducer, useEffect } from 'react';
+import React, { useReducer, useEffect } from 'react';
 import { useResource } from 'react-request-hook';
 import Userbar from './User/UserBar';
 import TodoList from './Post/Todolist';
@@ -32,12 +32,14 @@ function App() {
   return (
     <div className="App">
       <StateContext.Provider value={{state, dispatch}}>
+        <React.Suspense fallback={"Loading..."}>
           <Userbar />
-          {state.user && 
-          <>
-            <TodoList />
-            <CreateTodo />
-          </>}
+        </React.Suspense>
+        {state.user && 
+        <>
+          <TodoList />
+          <CreateTodo />
+        </>}
       </StateContext.Provider>
     </div>
   );
