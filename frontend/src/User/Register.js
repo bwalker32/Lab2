@@ -8,16 +8,21 @@ function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordRepeat, setPasswordRepeat] = useState("");
+  const [status, setStatus] = useState("");
 
   const [user, register] = useResource((username, password) => ({
-    url: 'users',
-    method: 'post',
-    data: {email: username, password},
+    url: "auth/register",
+    method: "post",
+    data: { username, password, passwordConfirmation: password },
   }));
 
   useEffect(() => {
-    if (user && user.data && user.data.user.email) {                      // If all are true
-      dispatch({ type: "REGISTER", username: user.data.user.email });
+    if (user && user.isLoading === false && (user.data || user.error)) {
+      if (user.error) {
+        setStatus("Registration failed, please try again later.");
+    } else {
+        setStatus("Registration successful. You may now login.");
+    }
     }
   }, [user]);
 
@@ -76,6 +81,7 @@ function Register() {
               </button>
 
         </div>
+        <p>{status}</p>
     </form>
 
   )

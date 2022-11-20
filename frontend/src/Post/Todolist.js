@@ -9,12 +9,10 @@ function TodoList() {   // todo array passed through
 
   return (
     <div>
-        {/* <CreateTodo addTodo={addTodo} user={user} dispatch={dispatch}/> */}
-        {todos.map((todo, idx) => (
-            <Todo {...todo} key={'todo-' + idx} dispatch={dispatch}/>
-        ))}   
+      {todos.length === 0 && <h2>No todos found.</h2>}
+      {todos.length > 0 && todos.map((p, i) => <Todo {...p} short={true} key={p._id} />)}
     </div>
   )
 }
 
-export default TodoList
+export default TodoList;

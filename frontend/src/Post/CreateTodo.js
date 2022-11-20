@@ -1,7 +1,7 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useResource } from 'react-request-hook';
 import { StateContext } from '../Context/context';
-import { v4 as uuidv4 } from "uuid";
+import { useNavigate } from 'react-router-dom';
 
 function CreateTodo() {
 
@@ -9,6 +9,7 @@ function CreateTodo() {
   const { user } = state;
   const [content, setContent] = useState(''); // Post input
   const [title, setTitle] = useState(''); // Post title
+  // const navigate = useNavigate();
   // const [error, setError] = useState(""); // Error for post 
 
   // Checking to see whether a title is used or not
@@ -39,27 +40,35 @@ function CreateTodo() {
     //         setError("");
     // }
 
-  const [todo, createTodo] = useResource(({ title, content, author, id }) => ({
-    url: "/todos",
-    method: "post",
-    data: { title, content, author, id ,completed: false },
+  const [todo, createTodo] = useResource(({ title, content, author}) => ({
+    url: '/post',
+    method: 'post',
+    headers: {Authorization: `${state.user.access_token}`},
+    data: { title, content },
   }));
+
+  useEffect(() => {
+    if (todo.isLoading === false && todo.data) {
+      console.log(todo);
+      dispatch({
+        type: "CREATE_TODO",
+        title: todo.data.title,
+        content: todo.data.content,
+        _id: todo.data._id,
+        author: user.username,
+      });
+    }
+  }, [todo]);
+
+  // useEffect(() => {
+  //   navigate(`/post/${todo.data._id}`);
+  // }, [todo])
 
   return(
     <form className='todo-form' 
     onSubmit={e => {
-      let id = uuidv4()
-      createTodo({title, content, author: user, id, completed: false})
       e.preventDefault();
-      dispatch({
-        type: "CREATE_TODO", 
-        payload: {
-          title: title, 
-          content: content, 
-          author: user,
-          id: id,
-          completed: false,
-        }});
+      createTodo({title, content, author: user })
       }}>
 
       {/* {(error !== "") ? (<div className='error'>{error}</div>) : ""} */}

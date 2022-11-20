@@ -14,7 +14,7 @@ function Logout() {
       console.log(user);
     }} 
     className="logout-form">
-      Logged in as {user}
+      Logged in as <b>{user.username}</b>
       <button type="submit" className="logout-button">Logout</button>
     </form>
 

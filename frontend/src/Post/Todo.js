@@ -1,19 +1,27 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useResource } from 'react-request-hook';
+import { Link } from 'react-router-dom';
+import { StateContext } from '../Context/context';
 
 
-function Todo({ title, author, content, id, created, completed, dispatch, dateCompleted}) {
+function Todo({ title, author, content, _id, created, completed, dateCompleted, short = false}) {
 
-    const [todo, deleteTodo] = useResource(({ id }) => ({
-        url: `/todos/${id}`,
+    const { state, dispatch } = useContext(StateContext);
+
+    const [todo, deleteTodo] = useResource((_id) => ({
+        url: `/post/${_id}`,
         method: "delete",
+        headers: {Authorization: `${state.user.access_token}`}
     }));
 
-    const [complete, completeTodo] = useResource(({ id }) => ({
-        url: `/todos/${id}`,
-        method: "patch",
+
+    const [complete, completeTodo] = useResource((_id) => ({
+        url: `/post/${_id}`,
+        method: "put",
+        headers: {Authorization: `${state.user.access_token}`},
         data: {completed: !completed}
     }))
+
 
     return (
         // Mapping over todos 
@@ -37,16 +45,24 @@ function Todo({ title, author, content, id, created, completed, dispatch, dateCo
 
                 <label htmlFor='delete' id='delete-label'>Delete:</label>
                 <input type='checkbox' name='delete-box' id='delete-box' 
-                onClick={() => {
-                    deleteTodo({ id })
-                    dispatch({type: "DELETE_TODO", payload: {id: id}})
+                onClick={(e) => {
+                    e.preventDefault();
+                    deleteTodo(_id);
+                    dispatch({
+                        type: "DELETE_TODO", 
+                        payload: {_id: _id}
+                    })
                 }}/>
 
                 <label htmlFor='complete' id='complete-label'>Complete:</label>
                 <input type='checkbox' name='complete-box' id='complete-box'
-                onClick={() => {
-                    completeTodo({ id })
-                    dispatch({type: "COMPLETED", payload: {id: id}})
+                onClick={(e) => {
+                    e.preventDefault();
+                    completeTodo(_id);
+                    dispatch({
+                        type: "COMPLETED",
+                        payload: {_id: _id}
+                    })
                 }}/>
             </div>
             {/* {(todo.isComplete === true) ? (<div key={todo.id} className="todo-date-completeted">{todo.dateCompleted}</div>) : ""} */}

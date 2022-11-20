@@ -1,12 +1,15 @@
+require('dotenv').config();
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var usersRouter = require('./routes/user');
 
 var app = express();
+require('./setupMongo')();
+
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -16,5 +19,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+app.use(express.json())              // Parse request 
+app.use("/auth", require("./routes/auth"))      // Redirect to desired path
+app.use("/post", require("./routes/post"))      // Redirect to desired path
 
 module.exports = app;
